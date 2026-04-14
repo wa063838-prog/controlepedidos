@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Pedidos{% endblock %}
+{% block header %}Pedidos Recebidos{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between mb-3">
+    <form method="GET" action="/pedidos" class="w-50">
+        <input type="text" name="busca" class="form-control" placeholder="🔍 Buscar pedido...">
+    </form>
+    <a href="/novo_pedido" class="btn btn-primary">+ Registrar Pedido</a>
+</div>
+
+<table class="table table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Nº Pedido</th>
+            <th>Vendedor</th>
+            <th>Cliente</th>
+            <th>Itens</th>
+            <th>Total (t)</th>
+            <th>Data do Pedido</th>
+            <th>Status</th>
+            <th>Obs</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for pedido in pedidos %}
+        <tr>
+            <td>#{{ pedido.id }}</td>
+            <td>{{ pedido.numero_pedido }}</td>
+            <td>{{ pedido.vendedor }}</td>
+            <td>{{ pedido.cliente }}</td>
+            <td>
+                {% for item in pedido.itens %}
+                    <div>{{ item }}</div>
+                {% endfor %}
+            </td>
+            <td>{{ pedido.total_quantidade }} t</td>
+            <td>
+                {% if pedido.data_pedido %}
+                    {{ pedido.data_pedido[8:10] }}/{{ pedido.data_pedido[5:7] }}/{{ pedido.data_pedido[0:4] }}
+                {% endif %}
+            </td>
+            <td>
+                <form method="POST" action="/atualizar_status/{{ pedido.id }}">
+                    <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
+                        <option value="Aberto" {% if pedido.status == "Aberto" %}selected{% endif %}>Aberto</option>
+                        <option value="Finalizado" {% if pedido.status == "Finalizado" %}selected{% endif %}>Finalizado</option>
+                        <option value="Cancelado" {% if pedido.status == "Cancelado" %}selected{% endif %}>Cancelado</option>
+                    </select>
+                </form>
+            </td>
+            <td>{{ pedido.obs }}</td>
+            <td>
+                <a href="/pedido/{{ pedido.id }}" class="btn btn-sm btn-outline-primary">Ver detalhes</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

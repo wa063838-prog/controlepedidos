@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Pedido{% endblock %}
+{% block header %}Registrar Pedido{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+    <div class="mb-3">
+        <label>Número do Pedido</label>
+        <input type="text" name="numero_pedido" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Vendedor</label>
+        <input type="text" name="vendedor" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Cliente</label>
+        <select name="cliente" class="form-control" required>
+            <option value="">Selecione um cliente</option>
+            {% for c in clientes %}
+                <option value="{{ c[0] }}">{{ c[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Data do Pedido</label>
+        <input type="date" name="data_pedido" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label>Status</label>
+        <select name="status" class="form-control">
+            <option value="Aberto">Aberto</option>
+            <option value="Finalizado">Finalizado</option>
+            <option value="Cancelado">Cancelado</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Observação</label>
+        <textarea name="obs" class="form-control" rows="3"></textarea>
+    </div>
+
+    <hr>
+
+    <h5 class="mb-3">Itens do Pedido</h5>
+
+    <div id="itens-pedido">
+        <div class="row mb-3 item-linha">
+            <div class="col-md-5">
+                <label>Material</label>
+                <input type="text" name="material[]" class="form-control" required>
+            </div>
+
+            <div class="col-md-3">
+                <label>Quantidade (t)</label>
+                <input type="number" step="0.01" name="quantidade[]" class="form-control" required>
+            </div>
+
+            <div class="col-md-3">
+                <label>Valor Unitário</label>
+                <input type="number" step="0.01" name="valor_unitario[]" class="form-control" required>
+            </div>
+
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="button" class="btn btn-danger remover-item">X</button>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-outline-primary mb-4" onclick="adicionarItem()">
+        + Adicionar item
+    </button>
+
+    <br>
+
+    <button type="submit" class="btn btn-success">Salvar Pedido</button>
+</form>
+
+<script>
+function adicionarItem() {
+    const container = document.getElementById("itens-pedido");
+
+    const novaLinha = document.createElement("div");
+    novaLinha.className = "row mb-3 item-linha";
+
+    novaLinha.innerHTML = `
+        <div class="col-md-5">
+            <label>Material</label>
+            <input type="text" name="material[]" class="form-control" required>
+        </div>
+
+        <div class="col-md-3">
+            <label>Quantidade (t)</label>
+            <input type="number" step="0.01" name="quantidade[]" class="form-control" required>
+        </div>
+
+        <div class="col-md-3">
+            <label>Valor Unitário</label>
+            <input type="number" step="0.01" name="valor_unitario[]" class="form-control" required>
+        </div>
+
+        <div class="col-md-1 d-flex align-items-end">
+            <button type="button" class="btn btn-danger remover-item">X</button>
+        </div>
+    `;
+
+    container.appendChild(novaLinha);
+    atualizarBotoesRemover();
+}
+
+function atualizarBotoesRemover() {
+    const botoes = document.querySelectorAll(".remover-item");
+
+    botoes.forEach((botao) => {
+        botao.onclick = function() {
+            const linhas = document.querySelectorAll(".item-linha");
+            if (linhas.length > 1) {
+                this.closest(".item-linha").remove();
+            }
+        };
+    });
+}
+
+atualizarBotoesRemover();
+</script>
+
+{% endblock %}

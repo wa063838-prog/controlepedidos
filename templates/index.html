@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Início{% endblock %}
+{% block header %}Início{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Bem-vindo ao sistema 👋</h2>
+<p class="text-muted mb-4">Resumo geral dos pedidos e retiradas.</p>
+
+<div class="row g-4">
+
+    <div class="col-md-3">
+        <div class="bg-white rounded shadow-sm p-4 text-center h-100 border">
+            <div class="fs-5 mb-2">📋 Pedidos</div>
+            <div class="fs-2 fw-bold text-primary">{{ total_pedidos }}</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="bg-white rounded shadow-sm p-4 text-center h-100 border">
+            <div class="fs-5 mb-2">📦 Total Pedido</div>
+            <div class="fs-2 fw-bold text-dark">{{ "%.0f"|format(total_pedido) }} t</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="bg-white rounded shadow-sm p-4 text-center h-100 border">
+            <div class="fs-5 mb-2">🚛 Total Retirado</div>
+            <div class="fs-2 fw-bold text-success">{{ "%.0f"|format(total_retirado) }} t</div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="bg-white rounded shadow-sm p-4 text-center h-100 border">
+            <div class="fs-5 mb-2">⚖️ Saldo</div>
+            <div class="fs-2 fw-bold text-danger">{{ "%.0f"|format(saldo) }} t</div>
+        </div>
+    </div>
+
+</div>
+
+<div class="mt-5">
+    <div class="bg-white rounded shadow-sm p-4 border">
+        <h4 class="mb-3">Resumo rápido</h4>
+        <p class="mb-2"><strong>Pedidos cadastrados:</strong> {{ total_pedidos }}</p>
+        <p class="mb-2"><strong>Total em pedidos:</strong> {{ "%.0f"|format(total_pedido) }} t</p>
+        <p class="mb-2"><strong>Total retirado:</strong> {{ "%.0f"|format(total_retirado) }} t</p>
+        <p class="mb-0"><strong>Saldo atual:</strong> {{ "%.0f"|format(saldo) }} t</p>
+    </div>
+</div>
+
+{% endblock %}

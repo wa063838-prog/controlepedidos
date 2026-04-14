@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Cadastrar Cliente{% endblock %}
+{% block header %}Cadastrar Cliente{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+    <div class="mb-3">
+        <label>Nome do Cliente</label>
+        <input type="text" name="nome" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>CNPJ / CPF</label>
+        <input type="text" name="cnpj" class="form-control" placeholder="00.000.000/0000-00 ou 000.000.000-00">
+    </div>
+
+    <div class="mb-3">
+        <label>Telefone</label>
+        <input type="text" name="telefone" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label>Cidade</label>
+        <input type="text" name="cidade" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label>Observação</label>
+        <textarea name="obs" class="form-control" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar Cliente</button>
+</form>
+
+{% endblock %}

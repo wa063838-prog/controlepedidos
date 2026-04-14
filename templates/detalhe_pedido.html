@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes do Pedido{% endblock %}
+{% block header %}Pedido {{ pedido.numero_pedido }}{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h4>Dados do Pedido</h4>
+    <p><strong>Nº Pedido:</strong> {{ pedido.numero_pedido }}</p>
+    <p><strong>Cliente:</strong> {{ pedido.cliente }}</p>
+    <p><strong>Vendedor:</strong> {{ pedido.vendedor }}</p>
+
+    <p><strong>Itens do Pedido:</strong></p>
+    <ul>
+        {% for item in itens_pedido %}
+            <li>{{ item.material }} - {{ item.quantidade }} t</li>
+        {% endfor %}
+    </ul>
+
+    <p><strong>Total Pedido:</strong> {{ total_pedido }} t</p>
+
+    <p>
+        <strong>Data do Pedido:</strong>
+        {% if pedido.data_pedido %}
+            {{ pedido.data_pedido[8:10] }}/{{ pedido.data_pedido[5:7] }}/{{ pedido.data_pedido[0:4] }}
+        {% endif %}
+    </p>
+
+    <p><strong>Status:</strong> {{ pedido.status }}</p>
+    <p><strong>Observação:</strong> {{ pedido.obs }}</p>
+</div>
+
+<div class="mb-4">
+    <h4>Resumo por Material</h4>
+
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Material</th>
+                <th>Pedido (t)</th>
+                <th>Retirado (t)</th>
+                <th>Saldo (t)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in resumo_materiais %}
+            <tr>
+                <td>{{ item.material }}</td>
+                <td>{{ item.quantidade_pedida }} t</td>
+                <td>{{ item.quantidade_retirada }} t</td>
+                <td>{{ item.saldo }} t</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<hr>
+
+<h4 class="mb-3">Registrar Retirada</h4>
+
+<form method="POST" class="mb-5">
+    <div class="mb-3">
+        <label>Material</label>
+        <select name="item_pedido" class="form-control" required>
+            {% for item in itens_pedido %}
+                <option value="{{ item.id }}">
+                    {{ item.material }} ({{ item.quantidade }} t)
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Data da Retirada</label>
+        <input type="date" name="data_retirada" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Quantidade Retirada (t)</label>
+        <input type="number" step="0.01" name="quantidade_retirada" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Número da Nota</label>
+        <input type="text" name="numero_nota" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label>Observação</label>
+        <textarea name="observacao" class="form-control" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Adicionar Retirada</button>
+</form>
+
+<hr>
+
+<h4 class="mb-3">Retiradas</h4>
+
+<table class="table table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Material</th>
+            <th>Data</th>
+            <th>Quantidade (t)</th>
+            <th>Nº Nota</th>
+            <th>Observação</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for retirada in retiradas %}
+        <tr>
+            <td>#{{ retirada.id }}</td>
+            <td>{{ retirada.material }}</td>
+            <td>
+                {% if retirada.data_retirada %}
+                    {{ retirada.data_retirada[8:10] }}/{{ retirada.data_retirada[5:7] }}/{{ retirada.data_retirada[0:4] }}
+                {% endif %}
+            </td>
+            <td>{{ retirada.quantidade }} t</td>
+            <td>{{ retirada.numero_nota }}</td>
+            <td>{{ retirada.obs }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not retiradas %}
+<p class="text-muted">Ainda não há retiradas registradas para este pedido.</p>
+{% endif %}
+
+{% endblock %}

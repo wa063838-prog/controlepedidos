@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Pedidos do Cliente{% endblock %}
+{% block header %}Pedidos de {{ nome_cliente }}{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between mb-3">
+    <h5 class="mb-0">Cliente: {{ nome_cliente }}</h5>
+    <a href="/clientes" class="btn btn-outline-secondary">Voltar</a>
+</div>
+
+<h5 class="mt-4 mb-3">Resumo por Material</h5>
+
+<table class="table table-hover align-middle mb-5">
+    <thead class="table-light">
+        <tr>
+            <th>Material</th>
+            <th>Total Pedido (t)</th>
+            <th>Total Retirado (t)</th>
+            <th>Falta (t)</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for item in resumo_materiais %}
+        <tr>
+            <td>{{ item.material }}</td>
+            <td>{{ item.total_pedido }} t</td>
+            <td>{{ item.total_retirado }} t</td>
+            <td>{{ item.falta }} t</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not resumo_materiais %}
+<p class="text-muted mb-4">Esse cliente ainda não possui resumo de materiais.</p>
+{% endif %}
+
+<h5 class="mb-3">Pedidos</h5>
+
+<table class="table table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Nº Pedido</th>
+            <th>Vendedor</th>
+            <th>Material</th>
+            <th>Qtd (t)</th>
+            <th>Data do Pedido</th>
+            <th>Status</th>
+            <th>Obs</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for pedido in pedidos %}
+        <tr>
+            <td>#{{ pedido.id }}</td>
+            <td>{{ pedido.numero_pedido }}</td>
+            <td>{{ pedido.vendedor }}</td>
+            <td>{{ pedido.material }}</td>
+            <td>{{ pedido.quantidade }} t</td>
+            <td>
+                {% if pedido.data_pedido %}
+                    {{ pedido.data_pedido[8:10] }}/{{ pedido.data_pedido[5:7] }}/{{ pedido.data_pedido[0:4] }}
+                {% endif %}
+            </td>
+
+            <td>
+                <form method="POST" action="/atualizar_status/{{ pedido.id }}">
+                    <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
+                        <option value="Aberto" {% if pedido.status == "Aberto" %}selected{% endif %}>Aberto</option>
+                        <option value="Finalizado" {% if pedido.status == "Finalizado" %}selected{% endif %}>Finalizado</option>
+                        <option value="Cancelado" {% if pedido.status == "Cancelado" %}selected{% endif %}>Cancelado</option>
+                    </select>
+                </form>
+            </td>
+
+            <td>{{ pedido.obs }}</td>
+            <td>
+                <a href="/pedido/{{ pedido.id }}" class="btn btn-sm btn-outline-primary">Ver detalhes</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not pedidos %}
+<p class="text-muted mt-3">Esse cliente ainda não tem pedidos cadastrados.</p>
+{% endif %}
+
+{% endblock %}

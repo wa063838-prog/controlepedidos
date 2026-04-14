@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Cliente{% endblock %}
+{% block header %}Editar Cliente{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+    <div class="mb-3">
+        <label>Nome do Cliente</label>
+        <input type="text" name="nome" class="form-control" value="{{ cliente.nome }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label>CNPJ / CPF</label>
+        <input type="text" name="cnpj" class="form-control" value="{{ cliente.cnpj }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Telefone</label>
+        <input type="text" name="telefone" class="form-control" value="{{ cliente.telefone }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Cidade</label>
+        <input type="text" name="cidade" class="form-control" value="{{ cliente.cidade }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Observação</label>
+        <textarea name="obs" class="form-control" rows="3">{{ cliente.obs }}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar Alterações</button>
+</form>
+
+{% endblock %}

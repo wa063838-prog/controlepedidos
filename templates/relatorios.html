@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Relatórios{% endblock %}
+{% block header %}Relatórios{% endblock %}
+
+{% block content %}
+
+<div class="card p-4">
+    <h3 class="mb-4">Gerar Relatório em PDF</h3>
+
+    <form method="GET" action="/relatorios/pdf" class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Cliente</label>
+            <select name="cliente" class="form-control">
+                <option value="">Todos os clientes</option>
+                {% for c in clientes %}
+                    <option value="{{ c[0] }}">{{ c[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-danger">
+                Baixar PDF
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
