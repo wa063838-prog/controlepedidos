@@ -808,6 +808,33 @@ def apagar_pedido(id):
 
     return redirect(url_for("pedidos"))
 
+@app.route("/apagar_retirada/<int:id>", methods=["POST"])
+@login_required
+def apagar_retirada(id):
+    conn = get_conn()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("SELECT pedido_id FROM retiradas WHERE id = %s", (id,))
+        retirada = cursor.fetchone()
+
+        if not retirada:
+            conn.close()
+            return "Retirada não encontrada"
+
+        pedido_id = retirada[0]
+
+        cursor.execute("DELETE FROM retiradas WHERE id = %s", (id,))
+        conn.commit()
+
+    except Exception as e:
+        conn.rollback()
+        return f"Erro ao apagar retirada: {e}"
+    finally:
+        conn.close()
+
+    return redirect(url_for("detalhe_pedido", id=pedido_id))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
