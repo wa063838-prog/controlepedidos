@@ -108,6 +108,7 @@
             <th>Quantidade (t)</th>
             <th>Nº Nota</th>
             <th>Observação</th>
+            <th>Ação</th>
         </tr>
     </thead>
 
@@ -121,9 +122,17 @@
                     {{ retirada.data_retirada[8:10] }}/{{ retirada.data_retirada[5:7] }}/{{ retirada.data_retirada[0:4] }}
                 {% endif %}
             </td>
-            <td>{{ retirada.quantidade }} t</td>
+            <td>{{ "%.2f"|format(retirada.quantidade|float) }} t</td>
             <td>{{ retirada.numero_nota }}</td>
             <td>{{ retirada.obs }}</td>
+            <td>
+                <form method="POST"
+                      action="/apagar_retirada/{{ retirada.id }}"
+                      style="display:inline;"
+                      onsubmit="return confirm('Tem certeza que deseja apagar esta retirada?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Apagar</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -132,5 +141,3 @@
 {% if not retiradas %}
 <p class="text-muted">Ainda não há retiradas registradas para este pedido.</p>
 {% endif %}
-
-{% endblock %}
