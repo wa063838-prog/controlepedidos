@@ -26,9 +26,9 @@
         {% for item in resumo_materiais %}
         <tr>
             <td>{{ item.material }}</td>
-            <td>{{ item.total_pedido }} t</td>
-            <td>{{ item.total_retirado }} t</td>
-            <td>{{ item.falta }} t</td>
+            <td>{{ "%.2f"|format(item.total_pedido|float) }} t</td>
+            <td>{{ "%.2f"|format(item.total_retirado|float) }} t</td>
+            <td>{{ "%.2f"|format(item.falta|float) }} t</td>
         </tr>
         {% endfor %}
     </tbody>
