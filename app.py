@@ -820,7 +820,7 @@ def apagar_retirada(id):
 
         if not retirada:
             conn.close()
-            return "Retirada não encontrada"
+            return redirect(url_for("pedidos"))  # fallback seguro
 
         pedido_id = retirada[0]
 
