@@ -58,11 +58,15 @@
             <td>{{ pedido.obs }}</td>
             <td>
                 <a href="/pedido/{{ pedido.id }}" class="btn btn-sm btn-outline-primary">Ver detalhes</a>
-            </td>
-                <form method="POST" action="/apagar_pedido/{{ pedido.id }}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja apagar este pedido?');">
+
+                <form method="POST"
+                      action="/apagar_pedido/{{ pedido.id }}"
+                      style="display:inline;"
+                      onsubmit="return confirm('Tem certeza que deseja apagar este pedido?');">
                     <button type="submit" class="btn btn-sm btn-outline-danger">Apagar</button>
                 </form>
-            </tr>
+            </td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>

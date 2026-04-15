@@ -789,7 +789,13 @@ def apagar_pedido(id):
     cursor = conn.cursor()
 
     try:
-        cursor.execute("DELETE FROM retiradas WHERE pedido_id = %s", (id,))
+        cursor.execute("SELECT COUNT(*) FROM retiradas WHERE pedido_id = %s", (id,))
+        tem_retirada = cursor.fetchone()[0] > 0
+
+        if tem_retirada:
+            conn.close()
+            return "Esse pedido não pode ser apagado porque já possui retiradas registradas."
+
         cursor.execute("DELETE FROM itens_pedido WHERE pedido_id = %s", (id,))
         cursor.execute("DELETE FROM pedidos WHERE id = %s", (id,))
 
