@@ -782,6 +782,26 @@ def relatorio_pdf():
     pdf.save()
     return response
 
+@app.route("/apagar_pedido/<int:id>", methods=["POST"])
+@login_required
+def apagar_pedido(id):
+    conn = get_conn()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("DELETE FROM retiradas WHERE pedido_id = %s", (id,))
+        cursor.execute("DELETE FROM itens_pedido WHERE pedido_id = %s", (id,))
+        cursor.execute("DELETE FROM pedidos WHERE id = %s", (id,))
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return f"Erro ao apagar pedido: {e}"
+    finally:
+        conn.close()
+
+    return redirect(url_for("pedidos"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
