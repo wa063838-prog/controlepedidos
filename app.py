@@ -72,10 +72,20 @@ def inicio():
     cursor.execute("SELECT COUNT(*) FROM pedidos")
     total_pedidos = cursor.fetchone()[0] or 0
 
-    cursor.execute("SELECT COALESCE(SUM(quantidade), 0) FROM itens_pedido")
+    cursor.execute("""
+        SELECT COALESCE(SUM(ip.quantidade), 0)
+        FROM itens_pedido ip
+        JOIN pedidos p ON ip.pedido_id = p.id
+        WHERE p.status != 'Cancelado'
+    """)
     total_pedido = float(cursor.fetchone()[0] or 0)
 
-    cursor.execute("SELECT COALESCE(SUM(quantidade_retirada), 0) FROM retiradas")
+    cursor.execute("""
+        SELECT COALESCE(SUM(r.quantidade_retirada), 0)
+        FROM retiradas r
+        JOIN pedidos p ON r.pedido_id = p.id
+        WHERE p.status != 'Cancelado'
+    """)
     total_retirado = float(cursor.fetchone()[0] or 0)
 
     conn.close()
@@ -418,6 +428,7 @@ def pedidos_do_cliente(id):
         JOIN itens_pedido ip ON ip.pedido_id = p.id
         LEFT JOIN retiradas r ON r.item_pedido_id = ip.id
         WHERE p.cliente_id = %s
+        AND p.status != 'Cancelado'
         GROUP BY ip.material
         ORDER BY ip.material ASC
     """, (id,))
