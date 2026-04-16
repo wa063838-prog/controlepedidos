@@ -539,15 +539,28 @@ def detalhe_pedido(id):
 
     cursor.execute("""
         SELECT
-            ip.material,
-            SUM(ip.quantidade) AS quantidade_pedida,
-            COALESCE(SUM(r.quantidade_retirada), 0) AS quantidade_retirada
-        FROM itens_pedido ip
-        LEFT JOIN retiradas r ON r.item_pedido_id = ip.id
-        WHERE ip.pedido_id = %s
-        GROUP BY ip.material
-        ORDER BY ip.material ASC
-    """, (id,))
+            p.material,
+            p.quantidade_pedida,
+            COALESCE(r.quantidade_retirada, 0) AS quantidade_retirada
+        FROM (
+            SELECT
+                material,
+                SUM(quantidade) AS quantidade_pedida
+            FROM itens_pedido
+            WHERE pedido_id = %s
+            GROUP BY material
+        ) p
+        LEFT JOIN (
+            SELECT
+                ip.material,
+                SUM(r.quantidade_retirada) AS quantidade_retirada
+            FROM retiradas r
+            JOIN itens_pedido ip ON ip.id = r.item_pedido_id
+            WHERE r.pedido_id = %s
+            GROUP BY ip.material
+        ) r ON r.material = p.material
+        ORDER BY p.material ASC
+    """, (id, id))
 
     resumo_db = cursor.fetchall()
 
