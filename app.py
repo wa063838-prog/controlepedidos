@@ -537,24 +537,32 @@ def detalhe_pedido(id):
         })
         total_pedido += float(item[2])
 
+    cursor.execute("""
+        SELECT
+            ip.material,
+            SUM(ip.quantidade) AS quantidade_pedida,
+            COALESCE(SUM(r.quantidade_retirada), 0) AS quantidade_retirada
+        FROM itens_pedido ip
+        LEFT JOIN retiradas r ON r.item_pedido_id = ip.id
+        WHERE ip.pedido_id = %s
+        GROUP BY ip.material
+        ORDER BY ip.material ASC
+    """, (id,))
+
+    resumo_db = cursor.fetchall()
+
     resumo_materiais = []
 
-    for item in itens_pedido:
-        cursor.execute("""
-            SELECT COALESCE(SUM(quantidade_retirada), 0)
-            FROM retiradas
-            WHERE item_pedido_id = %s
-        """, (item["id"],))
-
-        total_retirado_item = cursor.fetchone()[0] or 0
-        total_retirado_item = float(total_retirado_item)
-
-        saldo_item = float(item["quantidade"]) - total_retirado_item
+    for row in resumo_db:
+        material = row[0]
+        quantidade_pedida = float(row[1] or 0)
+        quantidade_retirada = float(row[2] or 0)
+        saldo_item = quantidade_pedida - quantidade_retirada
 
         resumo_materiais.append({
-            "material": item["material"],
-            "quantidade_pedida": float(item["quantidade"]),
-            "quantidade_retirada": total_retirado_item,
+            "material": material,
+            "quantidade_pedida": quantidade_pedida,
+            "quantidade_retirada": quantidade_retirada,
             "saldo": saldo_item
         })
 
