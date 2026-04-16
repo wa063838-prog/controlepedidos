@@ -420,18 +420,33 @@ def pedidos_do_cliente(id):
         })
 
     cursor.execute("""
+    SELECT
+        p.material,
+        p.total_pedido,
+        COALESCE(r.total_retirado, 0) AS total_retirado
+    FROM (
         SELECT
             ip.material,
-            SUM(ip.quantidade) AS total_pedido,
-            COALESCE(SUM(r.quantidade_retirada), 0) AS total_retirado
-        FROM pedidos p
-        JOIN itens_pedido ip ON ip.pedido_id = p.id
-        LEFT JOIN retiradas r ON r.item_pedido_id = ip.id
-        WHERE p.cliente_id = %s
-        AND p.status != 'Cancelado'
+            SUM(ip.quantidade) AS total_pedido
+        FROM pedidos ped
+        JOIN itens_pedido ip ON ip.pedido_id = ped.id
+        WHERE ped.cliente_id = %s
+        AND ped.status != 'Cancelado'
         GROUP BY ip.material
-        ORDER BY ip.material ASC
-    """, (id,))
+    ) p
+    LEFT JOIN (
+        SELECT
+            ip.material,
+            SUM(r.quantidade_retirada) AS total_retirado
+        FROM retiradas r
+        JOIN itens_pedido ip ON ip.id = r.item_pedido_id
+        JOIN pedidos ped ON ped.id = r.pedido_id
+        WHERE ped.cliente_id = %s
+        AND ped.status != 'Cancelado'
+        GROUP BY ip.material
+    ) r ON r.material = p.material
+    ORDER BY p.material ASC
+""", (id, id))
 
     resumo_db = cursor.fetchall()
     conn.close()
