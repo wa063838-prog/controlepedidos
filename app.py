@@ -22,7 +22,7 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "123456")
 def get_conn():
     if not DATABASE_URL:
         raise RuntimeError("DATABASE_URL não configurada.")
-    return psycopg.connect(DATABASE_URL)
+    return psycopg.connect(DATABASE_URL, sslmode="require")
 
 
 def login_required(view):
